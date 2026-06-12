@@ -1,0 +1,437 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>极简工具箱 - 免费在线工具集合</title>
+<meta name="description" content="图片压缩、二维码生成、JSON格式化、颜色调色板等免费在线工具">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #f5f6f8;
+  --surface: #ffffff;
+  --border: #e5e7eb;
+  --text: #1a1a1a;
+  --text-secondary: #6b7280;
+  --text-tertiary: #9ca3af;
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+  --primary-light: #eff6ff;
+  --sidebar-w: 220px;
+  --header-h: 52px;
+  --radius: 8px;
+}
+
+html, body { height: 100%; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  font-size: 14px;
+  color: var(--text);
+  background: var(--bg);
+  display: flex;
+  line-height: 1.5;
+}
+
+.sidebar {
+  width: var(--sidebar-w);
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  z-index: 10;
+  overflow-y: auto;
+}
+
+.sidebar-logo {
+  height: var(--header-h);
+  display: flex; align-items: center;
+  padding: 0 16px;
+  font-size: 16px; font-weight: 700;
+  border-bottom: 1px solid var(--border);
+  color: var(--primary);
+  gap: 8px;
+}
+
+.sidebar-logo svg { width: 22px; height: 22px; flex-shrink: 0; }
+
+.sidebar-nav { padding: 8px; flex: 1; }
+
+.sidebar-nav .nav-group {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  letter-spacing: 0.5px;
+  padding: 12px 12px 4px;
+}
+
+.nav-item {
+  display: flex; align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s;
+  font-size: 13px;
+  color: var(--text-secondary);
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+}
+
+.nav-item:hover { background: #f3f4f6; color: var(--text); }
+.nav-item.active { background: var(--primary-light); color: var(--primary); font-weight: 600; }
+.nav-item svg { width: 18px; height: 18px; flex-shrink: 0; opacity: 0.6; }
+.nav-item.active svg { opacity: 1; }
+
+.sidebar-footer {
+  padding: 12px 16px;
+  border-top: 1px solid var(--border);
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+
+.main {
+  margin-left: var(--sidebar-w);
+  flex: 1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.tool-header {
+  height: var(--header-h);
+  display: flex; align-items: center;
+  padding: 0 24px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+  position: sticky; top: 0;
+  z-index: 5;
+}
+
+.tool-header h1 { font-size: 16px; font-weight: 600; }
+
+.tool-body { padding: 24px; flex: 1; max-width: 900px; }
+
+.tool-section { display: none; }
+.tool-section.active { display: block; }
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.panel-header {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.panel-body { padding: 18px; }
+.panel + .panel { margin-top: 16px; }
+
+textarea, input[type="text"], input[type="url"], input[type="number"] {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 13px;
+  font-family: "SF Mono", "Cascadia Code", "Consolas", monospace;
+  resize: vertical;
+  background: #fafafa;
+  transition: border-color 0.15s;
+}
+
+textarea:focus, input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+  background: #fff;
+}
+
+textarea { min-height: 160px; }
+
+label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 6px;
+  color: var(--text);
+}
+
+.hint { font-size: 12px; color: var(--text-tertiary); margin-top: 4px; }
+
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 16px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+  background: var(--surface);
+  color: var(--text);
+}
+
+.btn:hover { background: #f3f4f6; }
+.btn-primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+.btn-primary:hover { background: var(--primary-hover); }
+.btn-sm { padding: 5px 12px; font-size: 12px; }
+.btn-group { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+
+.upload-zone {
+  border: 2px dashed var(--border);
+  border-radius: var(--radius);
+  padding: 40px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: #fafafa;
+}
+
+.upload-zone:hover { border-color: var(--primary); background: var(--primary-light); }
+.upload-zone.drag-over { border-color: var(--primary); background: var(--primary-light); }
+
+.upload-zone svg { width: 40px; height: 40px; color: var(--text-tertiary); margin-bottom: 10px; }
+.upload-zone p { font-size: 13px; color: var(--text-secondary); }
+
+.img-preview-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.img-preview-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.img-preview-card .card-label {
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  background: #fafafa;
+  border-bottom: 1px solid var(--border);
+}
+
+.img-preview-card img {
+  width: 100%;
+  max-height: 300px;
+  object-fit: contain;
+  display: block;
+  background: repeating-conic-gradient(#f0f0f0 0% 25%, transparent 0% 50%) 50% / 16px 16px;
+}
+
+.img-preview-card .card-foot {
+  padding: 8px 12px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  border-top: 1px solid var(--border);
+}
+
+.qr-result { text-align: center; padding: 20px; }
+.qr-result canvas { border-radius: 4px; }
+#qr-download-btn { display: none; margin-top: 12px; }
+
+.json-status { font-size: 12px; padding: 6px 12px; border-radius: 4px; margin-bottom: 8px; display: none; }
+.json-status.error { background: #fef2f2; color: #dc2626; display: block; }
+.json-status.success { background: #f0fdf4; color: #16a34a; display: block; }
+
+.color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; margin-top: 12px; }
+.color-swatch {
+  aspect-ratio: 1;
+  border-radius: 6px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: transform 0.15s, border-color 0.15s;
+  position: relative;
+  display: flex; align-items: flex-end; justify-content: center;
+  padding-bottom: 6px;
+}
+.color-swatch:hover { transform: scale(1.05); border-color: var(--primary); }
+.color-swatch span {
+  font-size: 10px;
+  font-family: monospace;
+  background: rgba(255,255,255,0.85);
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+.color-input-row { display: flex; gap: 10px; align-items: center; }
+.color-input-row input[type="color"] { width: 40px; height: 40px; border: 1px solid var(--border); border-radius: 6px; cursor: pointer; padding: 2px; }
+
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1a1a1a;
+  color: #fff;
+  padding: 8px 20px;
+  border-radius: 20px;
+  font-size: 13px;
+  z-index: 999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+.toast.show { opacity: 1; }
+
+.quality-row {
+  display: flex; align-items: center; gap: 12px;
+  margin-top: 12px;
+}
+.quality-row input[type="range"] { flex: 1; }
+.quality-row .q-label { font-size: 13px; font-weight: 600; min-width: 36px; text-align: right; }
+
+@media (max-width: 768px) {
+  body { flex-direction: column; }
+  .sidebar {
+    position: relative; width: 100%; flex-direction: row; flex-wrap: wrap;
+    border-right: none; border-bottom: 1px solid var(--border);
+    overflow-x: auto; flex-shrink: 0; padding: 6px; gap: 4px;
+  }
+  .sidebar-logo { display: none; }
+  .sidebar-nav { display: flex; padding: 0; gap: 2px; flex-wrap: wrap; }
+  .sidebar-nav .nav-group { display: none; }
+  .nav-item { padding: 7px 10px; font-size: 12px; width: auto; border-radius: 20px; }
+  .sidebar-footer { display: none; }
+  .main { margin-left: 0; }
+  .tool-body { padding: 16px; }
+  .img-preview-row { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="12" y1="8" x2="12" y2="16"/></svg>
+    极简工具箱
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-group">图片工具</div>
+    <button class="nav-item active" data-tool="compress">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+      图片压缩
+    </button>
+    <button class="nav-item" data-tool="qrcode">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="2" height="2"/><rect x="18" y="14" width="3" height="2"/><rect x="14" y="18" width="2" height="3"/><rect x="18" y="18" width="3" height="3"/></svg>
+      二维码生成
+    </button>
+    <div class="nav-group">文本工具</div>
+    <button class="nav-item" data-tool="json">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+      JSON 格式化
+    </button>
+    <div class="nav-group">设计工具</div>
+    <button class="nav-item" data-tool="color">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+      颜色调色板
+    </button>
+    <div class="nav-group">搞钱工具</div>
+    <a class="nav-item" href="flip.html" style="text-decoration:none">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      搞钱助手
+    </a>
+  </nav>
+  <div class="sidebar-footer">免费在线工具 · 无水印</div>
+</aside>
+
+<main class="main">
+  <div class="tool-header"><h1 id="tool-title">图片压缩</h1></div>
+  <div class="tool-body">
+
+    <section class="tool-section active" id="tool-compress">
+      <div class="panel">
+        <div class="panel-header">上传图片</div>
+        <div class="panel-body">
+          <div class="upload-zone" id="compress-dropzone">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            <p>点击或拖拽图片到此处</p>
+            <p class="hint">支持 JPG、PNG、WebP，最大 20MB</p>
+          </div>
+          <input type="file" id="compress-input" accept="image/*" style="display:none">
+          <div class="quality-row">
+            <span style="font-size:13px;white-space:nowrap">压缩质量</span>
+            <input type="range" id="compress-quality" min="10" max="100" value="75">
+            <span class="q-label" id="compress-q-label">75%</span>
+          </div>
+          <div class="img-preview-row" id="compress-preview" style="display:none"></div>
+          <div class="btn-group" id="compress-actions" style="display:none">
+            <button class="btn btn-primary" id="compress-download">下载压缩图</button>
+            <button class="btn" id="compress-reset">重新选择</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="tool-section" id="tool-qrcode">
+      <div class="panel">
+        <div class="panel-header">生成二维码</div>
+        <div class="panel-body">
+          <label for="qr-input">输入文本或网址</label>
+          <input type="text" id="qr-input" placeholder="输入需要生成二维码的内容...">
+          <p class="hint">支持网址、文本、电话号码等</p>
+          <div class="btn-group">
+            <button class="btn btn-primary" id="qr-generate">生成二维码</button>
+          </div>
+          <div class="qr-result" id="qr-result" style="display:none"></div>
+          <button class="btn btn-sm btn-primary" id="qr-download-btn">下载二维码</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="tool-section" id="tool-json">
+      <div class="panel">
+        <div class="panel-header">JSON 格式化 / 验证</div>
+        <div class="panel-body">
+          <label for="json-input">输入 JSON 字符串</label>
+          <textarea id="json-input" placeholder='{"name":"极简工具箱","version":1}'></textarea>
+          <div class="json-status" id="json-status"></div>
+          <div class="btn-group">
+            <button class="btn btn-primary" id="json-format">格式化</button>
+            <button class="btn" id="json-compress">压缩</button>
+            <button class="btn" id="json-validate">验证</button>
+            <button class="btn" id="json-clear">清空</button>
+          </div>
+          <label style="margin-top:16px" for="json-output">结果</label>
+          <textarea id="json-output" readonly placeholder="格式化结果将显示在这里..."></textarea>
+          <div class="btn-group">
+            <button class="btn btn-sm" id="json-copy">复制结果</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="tool-section" id="tool-color">
+      <div class="panel">
+        <div class="panel-header">从颜色生成调色板</div>
+        <div class="panel-body">
+          <div class="color-input-row">
+            <input type="color" id="color-picker" value="#2563eb">
+            <input type="text" id="color-hex" value="#2563eb" style="width:120px;font-family:monospace">
+            <button class="btn btn-primary btn-sm" id="color-generate">生成调色板</button>
+          </div>
+          <div class="color-grid" id="color-grid"></div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<div class="toast" id="toast"></div>
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+<script src="tools.js"></script>
+</body>
+</html>
