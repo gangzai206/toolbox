@@ -1,0 +1,364 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>技术服务 - 网站开发 · 数据采集 · 自动化脚本 · 小程序</title>
+<meta name="description" content="专业提供网站开发、微信小程序、数据采集、自动化脚本、PPT设计等技术服务，快速交付，质量保证">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #fafafa;
+  --surface: #ffffff;
+  --border: #e5e7eb;
+  --text: #1a1a1a;
+  --text-secondary: #6b7280;
+  --text-tertiary: #9ca3af;
+  --primary: #2563eb;
+  --primary-dark: #1d4ed8;
+  --radius: 8px;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  font-size: 15px;
+  color: var(--text);
+  background: var(--bg);
+  line-height: 1.6;
+}
+
+.container { max-width: 960px; margin: 0 auto; padding: 0 20px; }
+
+/* Hero */
+.hero {
+  background: linear-gradient(135deg, #1e3a5f 0%, #2563eb 100%);
+  color: #fff;
+  padding: 60px 0;
+}
+
+.hero h1 {
+  font-size: 32px; font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.hero p {
+  font-size: 16px;
+  opacity: 0.9;
+  max-width: 600px;
+}
+
+.hero .cta {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 12px 28px;
+  background: #fff;
+  color: var(--primary);
+  border-radius: 6px;
+  font-weight: 600;
+  text-decoration: none;
+  font-size: 15px;
+  transition: transform 0.15s;
+}
+
+.hero .cta:hover { transform: translateY(-1px); }
+
+/* Section */
+.section {
+  padding: 48px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.section-title {
+  font-size: 22px; font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.section-sub {
+  font-size: 14px; color: var(--text-secondary);
+  margin-bottom: 28px;
+}
+
+/* Services grid */
+.services {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.service-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  transition: box-shadow 0.15s;
+}
+
+.service-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.06); }
+
+.service-card .icon {
+  width: 40px; height: 40px;
+  background: #eff6ff;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 14px;
+}
+
+.service-card h3 {
+  font-size: 15px; font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.service-card p {
+  font-size: 13px; color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.service-card .price {
+  display: inline-block;
+  margin-top: 12px;
+  padding: 4px 10px;
+  background: #f0fdf4;
+  color: #059669;
+  border-radius: 4px;
+  font-size: 13px; font-weight: 600;
+}
+
+/* Works */
+.works {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.work-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.work-card .work-body {
+  padding: 18px;
+}
+
+.work-card h4 {
+  font-size: 14px; font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.work-card .work-tag {
+  display: inline-block;
+  font-size: 11px;
+  padding: 2px 8px;
+  background: #eff6ff;
+  color: var(--primary);
+  border-radius: 10px;
+  margin-right: 4px;
+}
+
+.work-card p {
+  font-size: 13px; color: var(--text-secondary);
+  margin-top: 8px;
+}
+
+/* Process */
+.steps {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.step {
+  text-align: center;
+}
+
+.step .num {
+  width: 40px; height: 40px;
+  background: var(--primary);
+  color: #fff;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 10px;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.step h4 { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+.step p { font-size: 12px; color: var(--text-secondary); }
+
+/* CTA section */
+.cta-section {
+  background: #f8fafc;
+  text-align: center;
+  padding: 48px 0;
+}
+
+.cta-section h2 {
+  font-size: 22px; font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.cta-section p {
+  color: var(--text-secondary);
+  margin-bottom: 20px;
+}
+
+.cta-btn {
+  display: inline-block;
+  padding: 12px 32px;
+  background: var(--primary);
+  color: #fff;
+  border-radius: 6px;
+  font-weight: 600;
+  text-decoration: none;
+  font-size: 15px;
+  transition: background 0.15s;
+}
+
+.cta-btn:hover { background: var(--primary-dark); }
+
+/* Footer */
+footer {
+  text-align: center;
+  padding: 24px 0;
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+
+@media (max-width: 600px) {
+  .hero h1 { font-size: 24px; }
+  .steps { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="container">
+    <h1>技术变现，快速交付</h1>
+    <p>网站开发 · 微信小程序 · 数据采集 · 自动化脚本 · PPT 设计。接单即做，不满意不收钱。</p>
+    <a href="#contact" class="cta">立即咨询</a>
+  </div>
+</header>
+
+<section class="section">
+  <div class="container">
+    <div class="section-title">服务项目</div>
+    <div class="section-sub">明码标价，快速交付。所有项目均可根据需求定制。</div>
+    <div class="services">
+      <div class="service-card">
+        <div class="icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
+        <h3>网站开发</h3>
+        <p>企业官网、个人主页、在线工具站、H5 落地页。响应式设计，兼容手机端。</p>
+        <span class="price">300 元起</span>
+      </div>
+      <div class="service-card">
+        <div class="icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></div>
+        <h3>微信小程序</h3>
+        <p>商城、预约系统、信息展示、工具类小程序。含上线审核指导。</p>
+        <span class="price">800 元起</span>
+      </div>
+      <div class="service-card">
+        <div class="icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+        <h3>数据采集</h3>
+        <p>网页数据抓取、竞品监控、价格跟踪、报表自动生成。结构化导出。</p>
+        <span class="price">200 元起</span>
+      </div>
+      <div class="service-card">
+        <div class="icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
+        <h3>自动化脚本</h3>
+        <p>Excel 批量处理、自动发邮件、表单填写、定时任务。省去重复劳动。</p>
+        <span class="price">150 元起</span>
+      </div>
+      <div class="service-card">
+        <div class="icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg></div>
+        <h3>PPT 设计</h3>
+        <p>商业计划书、路演 PPT、年终总结、产品介绍。专业排版，可配动画。</p>
+        <span class="price">100 元起</span>
+      </div>
+      <div class="service-card">
+        <div class="icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
+        <h3>文案撰写</h3>
+        <p>公众号文章、产品文案、SEO文章、小红书种草文。原创不洗稿。</p>
+        <span class="price">80 元起</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-title">作品案例</div>
+    <div class="section-sub">以下为近期交付的真实项目（客户信息已脱敏）</div>
+    <div class="works">
+      <div class="work-card">
+        <div class="work-body">
+          <h4>极简工具箱</h4>
+          <div style="margin:6px 0"><span class="work-tag">网站开发</span><span class="work-tag">在线工具</span></div>
+          <p>图片压缩、二维码生成、JSON格式化等 8 个在线工具。纯前端，全球 CDN 加速。</p>
+        </div>
+      </div>
+      <div class="work-card">
+        <div class="work-body">
+          <h4>电商价格监控系统</h4>
+          <div style="margin:6px 0"><span class="work-tag">数据采集</span><span class="work-tag">自动化</span></div>
+          <p>自动抓取竞品价格变化，生成日报推送。帮客户节省 2 小时/天的比价时间。</p>
+        </div>
+      </div>
+      <div class="work-card">
+        <div class="work-body">
+          <h4>企业官网重构</h4>
+          <div style="margin:6px 0"><span class="work-tag">网站开发</span><span class="work-tag">SEO</span></div>
+          <p>响应式重写，加载速度提升 3 倍。Google PageSpeed 评分从 45 提升至 92。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-title">合作流程</div>
+    <div class="section-sub">从需求到交付，全程透明</div>
+    <div class="steps">
+      <div class="step">
+        <div class="num">1</div>
+        <h4>沟通需求</h4>
+        <p>告诉我你要做什么，免费评估可行性和报价</p>
+      </div>
+      <div class="step">
+        <div class="num">2</div>
+        <h4>确认方案</h4>
+        <p>确定功能清单、交付时间和价格，双方确认后开始</p>
+      </div>
+      <div class="step">
+        <div class="num">3</div>
+        <h4>开发交付</h4>
+        <p>实时同步进度，交付可用的成果，支持修改</p>
+      </div>
+      <div class="step">
+        <div class="num">4</div>
+        <h4>验收结款</h4>
+        <p>满意后付款，提供 7 天免费维护。不满意不收钱</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-section" id="contact">
+  <div class="container">
+    <h2>有需求？现在就聊聊</h2>
+    <p>把你的想法告诉我，我帮你评估可行性和报价</p>
+    <a href="mailto:contact@gangzai.online" class="cta-btn">发送需求 →</a>
+    <p style="margin-top:12px;font-size:13px;color:var(--text-tertiary)">或直接在猪八戒 / 淘宝服务市场搜索本页面</p>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    © 2026 技术服务 · 所有项目均签署保密协议
+  </div>
+</footer>
+</body>
+</html>
