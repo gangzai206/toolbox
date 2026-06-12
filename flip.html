@@ -1,0 +1,590 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>搞钱工具 - 倒卖利润计算 & 比价助手</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #f5f6f8;
+  --surface: #ffffff;
+  --border: #e5e7eb;
+  --text: #1a1a1a;
+  --text-secondary: #6b7280;
+  --text-tertiary: #9ca3af;
+  --primary: #059669;
+  --primary-hover: #047857;
+  --primary-light: #ecfdf5;
+  --radius: 8px;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  font-size: 14px;
+  color: var(--text);
+  background: var(--bg);
+  line-height: 1.5;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+.header {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 28px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid var(--primary);
+}
+
+.header h1 { font-size: 22px; font-weight: 700; color: var(--primary); }
+.header .sub { font-size: 13px; color: var(--text-tertiary); margin-top: 2px; }
+.back-link { font-size: 12px; color: var(--text-tertiary); margin-left: auto; text-decoration: none; }
+.back-link:hover { color: var(--primary); }
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.panel-header {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+  font-weight: 600;
+  font-size: 14px;
+  display: flex; align-items: center; gap: 8px;
+}
+
+.panel-body { padding: 18px; }
+
+label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+input, select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: inherit;
+  background: #fafafa;
+  transition: border-color 0.15s;
+}
+
+input:focus, select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(5,150,105,0.1); background: #fff; }
+
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 10px 18px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+  background: var(--surface);
+  color: var(--text);
+}
+
+.btn:hover { background: #f3f4f6; }
+.btn-primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+.btn-primary:hover { background: var(--primary-hover); }
+.btn-sm { padding: 6px 12px; font-size: 12px; }
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.result-card {
+  margin-top: 16px;
+  padding: 16px;
+  background: var(--primary-light);
+  border-radius: var(--radius);
+  border: 1px solid #a7f3d0;
+}
+
+.result-row {
+  display: flex; justify-content: space-between;
+  padding: 6px 0;
+  font-size: 14px;
+}
+
+.result-row.highlight {
+  font-size: 18px; font-weight: 700;
+  color: var(--primary);
+  padding-top: 10px;
+  border-top: 1px solid #a7f3d0;
+  margin-top: 6px;
+}
+
+.divider {
+  border-top: 1px dashed var(--border);
+  margin: 8px 0;
+  padding-top: 8px;
+}
+
+.platform-btns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.platform-btn {
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 14px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  cursor: pointer;
+  font-size: 14px; font-weight: 500;
+  transition: all 0.15s;
+  text-decoration: none;
+  color: var(--text);
+}
+
+.platform-btn:hover { transform: translateY(-1px); box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+.platform-btn.xy { border-left: 3px solid #fbbf24; }
+.platform-btn.pdd { border-left: 3px solid #ef4444; }
+.platform-btn.alibaba { border-left: 3px solid #f97316; }
+.platform-btn.taobao { border-left: 3px solid #f59e0b; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+th {
+  text-align: left;
+  padding: 10px 12px;
+  background: #fafafa;
+  border-bottom: 2px solid var(--border);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.tag-green { background: #ecfdf5; color: #059669; }
+.tag-yellow { background: #fffbeb; color: #d97706; }
+.tag-red { background: #fef2f2; color: #dc2626; }
+
+.deal-table { margin-top: 12px; }
+.deal-table th:last-child, .deal-table td:last-child { text-align: right; }
+
+.form-inline {
+  display: flex; gap: 8px; align-items: flex-end;
+}
+
+.form-inline > div { flex: 1; }
+
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1a1a1a;
+  color: #fff;
+  padding: 8px 20px;
+  border-radius: 20px;
+  font-size: 13px;
+  z-index: 999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+.toast.show { opacity: 1; }
+
+.total-bar {
+  margin-top: 12px;
+  padding: 12px 16px;
+  background: var(--primary-light);
+  border-radius: var(--radius);
+  display: flex; justify-content: space-between;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+@media (max-width: 600px) {
+  .form-row { grid-template-columns: 1fr; }
+  .platform-btns { grid-template-columns: 1fr; }
+  .form-inline { flex-direction: column; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <h1>搞钱工具</h1>
+    <div class="sub">倒卖利润计算 · 多平台比价 · 选品参考</div>
+  </div>
+  <a href="index.html" class="back-link">← 返回工具箱</a>
+</div>
+
+<!-- Profit Calculator -->
+<div class="panel" id="calc-panel">
+  <div class="panel-header">利润计算器</div>
+  <div class="panel-body">
+    <div class="form-row">
+      <div>
+        <label>进货成本 (元)</label>
+        <input type="number" id="calc-cost" placeholder="例如 15" step="0.01" min="0">
+      </div>
+      <div>
+        <label>卖出价格 (元)</label>
+        <input type="number" id="calc-sell" placeholder="例如 35" step="0.01" min="0">
+      </div>
+    </div>
+    <div class="form-row">
+      <div>
+        <label>运费 (元，默认 0)</label>
+        <input type="number" id="calc-shipping" placeholder="0" step="0.01" min="0" value="0">
+      </div>
+      <div>
+        <label>平台费率 (%)</label>
+        <input type="number" id="calc-fee" placeholder="闲鱼 0%" step="0.1" min="0" max="100" value="0">
+      </div>
+    </div>
+    <button class="btn btn-primary" id="calc-btn">计算利润</button>
+    <div class="result-card" id="calc-result" style="display:none">
+      <div class="result-row"><span>进货成本</span><span id="r-cost">-</span></div>
+      <div class="result-row"><span>平台费用</span><span id="r-fee">-</span></div>
+      <div class="result-row"><span>运费</span><span id="r-shipping">-</span></div>
+      <div class="divider"></div>
+      <div class="result-row"><span>毛利润</span><span id="r-gross">-</span></div>
+      <div class="result-row highlight"><span>净利润</span><span id="r-net">-</span></div>
+      <div class="result-row" style="margin-top:4px"><span>利润率</span><span id="r-roi" style="font-size:14px;font-weight:600">-</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- Multi-platform Search -->
+<div class="panel">
+  <div class="panel-header">多平台比价搜索</div>
+  <div class="panel-body">
+    <label>输入商品关键词</label>
+    <input type="text" id="search-kw" placeholder="例如 蓝牙耳机 手机壳 收纳盒">
+    <p style="font-size:12px;color:var(--text-tertiary);margin-top:4px">点击下方按钮，在新标签页打开各平台搜索结果</p>
+    <div class="platform-btns">
+      <button class="platform-btn xy" onclick="openSearch('xy')">
+        闲鱼
+      </button>
+      <button class="platform-btn pdd" onclick="openSearch('pdd')">
+        拼多多
+      </button>
+      <button class="platform-btn alibaba" onclick="openSearch('1688')">
+        1688
+      </button>
+      <button class="platform-btn taobao" onclick="openSearch('tb')">
+        淘宝
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Category Guide -->
+<div class="panel">
+  <div class="panel-header">选品参考</div>
+  <div class="panel-body" style="overflow-x:auto">
+    <table>
+      <thead>
+        <tr>
+          <th>品类</th>
+          <th>进货平台</th>
+          <th>进货价</th>
+          <th>闲鱼售价</th>
+          <th>利润率</th>
+          <th>难度</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>手机壳</td>
+          <td>拼多多/1688</td>
+          <td>3-8 元</td>
+          <td>15-30 元</td>
+          <td><span class="tag tag-green">50-70%</span></td>
+          <td><span class="tag tag-green">低</span></td>
+        </tr>
+        <tr>
+          <td>数据线/充电头</td>
+          <td>1688</td>
+          <td>2-8 元</td>
+          <td>10-25 元</td>
+          <td><span class="tag tag-green">50-75%</span></td>
+          <td><span class="tag tag-green">低</span></td>
+        </tr>
+        <tr>
+          <td>小饰品/耳环</td>
+          <td>1688</td>
+          <td>1-10 元</td>
+          <td>10-35 元</td>
+          <td><span class="tag tag-green">55-70%</span></td>
+          <td><span class="tag tag-yellow">中</span></td>
+        </tr>
+        <tr>
+          <td>家居收纳</td>
+          <td>拼多多</td>
+          <td>5-15 元</td>
+          <td>20-40 元</td>
+          <td><span class="tag tag-green">40-60%</span></td>
+          <td><span class="tag tag-green">低</span></td>
+        </tr>
+        <tr>
+          <td>手机支架/懒人支架</td>
+          <td>拼多多/1688</td>
+          <td>3-10 元</td>
+          <td>15-30 元</td>
+          <td><span class="tag tag-green">50-65%</span></td>
+          <td><span class="tag tag-green">低</span></td>
+        </tr>
+        <tr>
+          <td>蓝牙耳机（白牌）</td>
+          <td>1688</td>
+          <td>15-30 元</td>
+          <td>40-80 元</td>
+          <td><span class="tag tag-yellow">40-55%</span></td>
+          <td><span class="tag tag-yellow">中</span></td>
+        </tr>
+        <tr>
+          <td>二手书籍</td>
+          <td>多抓鱼/闲鱼</td>
+          <td>3-15 元</td>
+          <td>15-45 元</td>
+          <td><span class="tag tag-green">60-80%</span></td>
+          <td><span class="tag tag-yellow">中</span></td>
+        </tr>
+        <tr>
+          <td>键盘鼠标</td>
+          <td>1688</td>
+          <td>10-30 元</td>
+          <td>35-80 元</td>
+          <td><span class="tag tag-yellow">40-60%</span></td>
+          <td><span class="tag tag-yellow">中</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="font-size:12px;color:var(--text-tertiary);margin-top:10px">以上为参考区间，实际利润取决于选品眼光和议价能力。建议先从一个品类试水。</p>
+  </div>
+</div>
+
+<!-- Deal Tracker -->
+<div class="panel">
+  <div class="panel-header">交易记录</div>
+  <div class="panel-body">
+    <div class="form-inline">
+      <div>
+        <label>商品名称</label>
+        <input type="text" id="deal-name" placeholder="蓝牙耳机">
+      </div>
+      <div>
+        <label>成本</label>
+        <input type="number" id="deal-cost" placeholder="15" step="0.01" min="0">
+      </div>
+      <div>
+        <label>售价</label>
+        <input type="number" id="deal-sell" placeholder="35" step="0.01" min="0">
+      </div>
+      <div style="display:flex;align-items:flex-end">
+        <button class="btn btn-primary btn-sm" id="deal-add">记一笔</button>
+      </div>
+    </div>
+    <table class="deal-table" id="deal-table" style="display:none">
+      <thead>
+        <tr>
+          <th>商品</th>
+          <th>成本</th>
+          <th>售价</th>
+          <th>利润</th>
+          <th>状态</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="deal-tbody"></tbody>
+    </table>
+    <div class="total-bar" id="deal-total" style="display:none">
+      <span>累计利润</span>
+      <span id="total-profit" style="color:var(--primary)">0</span>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+function showToast(msg) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._timeout);
+  t._timeout = setTimeout(function() { t.classList.remove('show'); }, 2000);
+}
+
+// Profit Calculator
+document.getElementById('calc-btn').addEventListener('click', function() {
+  var cost = parseFloat(document.getElementById('calc-cost').value) || 0;
+  var sell = parseFloat(document.getElementById('calc-sell').value) || 0;
+  var shipping = parseFloat(document.getElementById('calc-shipping').value) || 0;
+  var feeRate = parseFloat(document.getElementById('calc-fee').value) || 0;
+
+  if (cost <= 0 && sell <= 0) { showToast('请输入进货成本和卖出价格'); return; }
+
+  var fee = sell * feeRate / 100;
+  var gross = sell - cost;
+  var net = gross - fee - shipping;
+  var roi = cost > 0 ? (net / cost * 100) : 0;
+
+  document.getElementById('calc-result').style.display = 'block';
+  document.getElementById('r-cost').textContent = '-' + cost.toFixed(2) + ' 元';
+  document.getElementById('r-fee').textContent = '-' + fee.toFixed(2) + ' 元';
+  document.getElementById('r-shipping').textContent = '-' + shipping.toFixed(2) + ' 元';
+  document.getElementById('r-gross').textContent = gross.toFixed(2) + ' 元';
+  document.getElementById('r-net').textContent = (net >= 0 ? '+' : '') + net.toFixed(2) + ' 元';
+  document.getElementById('r-roi').textContent = (roi >= 0 ? '+' : '') + roi.toFixed(1) + '%';
+});
+
+// Multi-platform Search
+function openSearch(platform) {
+  var kw = document.getElementById('search-kw').value.trim();
+  if (!kw) { showToast('请先输入商品关键词'); return; }
+  var encoded = encodeURIComponent(kw);
+  var urls = {
+    xy: 'https://s.2.taobao.com/list/list.htm?q=' + encoded,
+    pdd: 'https://mobile.yangkeduo.com/search_result.html?search_key=' + encoded,
+    '1688': 'https://s.1688.com/selloffer/offer_search.htm?keywords=' + encoded,
+    tb: 'https://s.taobao.com/search?q=' + encoded
+  };
+  window.open(urls[platform], '_blank');
+}
+
+// Allow Enter key to trigger first platform button
+document.getElementById('search-kw').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') openSearch('xy');
+});
+
+// Deal Tracker
+var deals = [];
+try {
+  var saved = localStorage.getItem('flip-deals');
+  if (saved) deals = JSON.parse(saved);
+} catch(e) {}
+
+function saveDeals() {
+  localStorage.setItem('flip-deals', JSON.stringify(deals));
+}
+
+function renderDeals() {
+  var tbody = document.getElementById('deal-tbody');
+  var table = document.getElementById('deal-table');
+  var totalBar = document.getElementById('deal-total');
+
+  if (deals.length === 0) {
+    table.style.display = 'none';
+    totalBar.style.display = 'none';
+    return;
+  }
+
+  table.style.display = '';
+  totalBar.style.display = 'flex';
+
+  var totalProfit = 0;
+  tbody.innerHTML = '';
+  deals.forEach(function(d, i) {
+    var profit = d.status === 'sold' ? d.sell - d.cost : 0;
+    if (d.status === 'sold') totalProfit += profit;
+    var statusTag = d.status === 'sold'
+      ? '<span class="tag tag-green">已售</span>'
+      : '<span class="tag tag-yellow">在售</span>';
+    tbody.innerHTML +=
+      '<tr>' +
+        '<td>' + escHtml(d.name) + '</td>' +
+        '<td>' + d.cost.toFixed(2) + '</td>' +
+        '<td>' + d.sell.toFixed(2) + '</td>' +
+        '<td style="color:' + (profit > 0 ? 'var(--primary)' : 'var(--text-secondary)') + '">' +
+          (d.status === 'sold' ? (profit >= 0 ? '+' : '') + profit.toFixed(2) : '-') +
+        '</td>' +
+        '<td>' + statusTag + '</td>' +
+        '<td>' +
+          (d.status === 'active'
+            ? '<button class="btn btn-sm" onclick="markSold(' + i + ')" style="color:var(--primary);border-color:var(--primary)">标记已售</button> '
+            : '') +
+          '<button class="btn btn-sm" onclick="deleteDeal(' + i + ')" style="color:#dc2626">删除</button>' +
+        '</td>' +
+      '</tr>';
+  });
+
+  document.getElementById('total-profit').textContent = (totalProfit >= 0 ? '+' : '') + totalProfit.toFixed(2) + ' 元';
+}
+
+function escHtml(s) {
+  var d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
+
+document.getElementById('deal-add').addEventListener('click', function() {
+  var name = document.getElementById('deal-name').value.trim();
+  var cost = parseFloat(document.getElementById('deal-cost').value);
+  var sell = parseFloat(document.getElementById('deal-sell').value);
+  if (!name) { showToast('请输入商品名称'); return; }
+  if (isNaN(cost) || cost < 0) { showToast('请输入有效的成本'); return; }
+  if (isNaN(sell) || sell < 0) { showToast('请输入有效的售价'); return; }
+
+  deals.push({ name: name, cost: cost, sell: sell, status: 'active', date: new Date().toISOString() });
+  saveDeals();
+  renderDeals();
+
+  document.getElementById('deal-name').value = '';
+  document.getElementById('deal-cost').value = '';
+  document.getElementById('deal-sell').value = '';
+  showToast('已记录');
+});
+
+window.markSold = function(i) {
+  deals[i].status = 'sold';
+  saveDeals();
+  renderDeals();
+  showToast('已标记为售出');
+};
+
+window.deleteDeal = function(i) {
+  deals.splice(i, 1);
+  saveDeals();
+  renderDeals();
+  showToast('已删除');
+};
+
+renderDeals();
+</script>
+</body>
+</html>
