@@ -2,7 +2,7 @@
 var navItems = document.querySelectorAll(".nav-item");
 var toolSections = document.querySelectorAll(".tool-section");
 var toolTitle = document.getElementById("tool-title");
-var titles = { compress: "图片压缩", qrcode: "二维码生成", json: "JSON 格式化", color: "颜色调色板" };
+var titles = { compress: "图片压缩", qrcode: "二维码生成", json: "JSON 格式化", color: "颜色调色板", wordcount: "字数统计", base64conv: "Base64 编解码", uuidgen: "UUID 生成器", hashcalc: "哈希计算" };
 
 navItems.forEach(function(item) {
   item.addEventListener("click", function() {
@@ -293,4 +293,121 @@ function showToast(msg) {
   });
 
   generatePalette("#2563eb");
+
+// ===== Word Counter =====
+(function() {
+  var input = document.getElementById("wc-input");
+  var resultDiv = document.getElementById("wc-result");
+  document.getElementById("wc-count").addEventListener("click", function() {
+    var text = input.value;
+    var chars = text.length;
+    var words = text.trim() ? text.trim().split(/\s+/).length : 0;
+    var lines = text ? text.split("\n").length : 0;
+    var paras = text.trim() ? text.trim().split(/\n\s*\n/).length : 0;
+    document.getElementById("wc-chars").textContent = chars;
+    document.getElementById("wc-words").textContent = words;
+    document.getElementById("wc-lines").textContent = lines;
+    document.getElementById("wc-paras").textContent = paras;
+    resultDiv.style.display = "block";
+  });
+  document.getElementById("wc-clear").addEventListener("click", function() {
+    input.value = "";
+    resultDiv.style.display = "none";
+  });
+})();
+
+// ===== Base64 =====
+(function() {
+  var input = document.getElementById("b64-input");
+  var output = document.getElementById("b64-output");
+  document.getElementById("b64-encode").addEventListener("click", function() {
+    try {
+      output.value = btoa(unescape(encodeURIComponent(input.value)));
+    } catch(e) {
+      output.value = "编码失败: " + e.message;
+    }
+  });
+  document.getElementById("b64-decode").addEventListener("click", function() {
+    try {
+      output.value = decodeURIComponent(escape(atob(input.value)));
+    } catch(e) {
+      output.value = "解码失败: 请检查输入是否为有效的 Base64 字符串";
+    }
+  });
+  document.getElementById("b64-clear").addEventListener("click", function() {
+    input.value = "";
+    output.value = "";
+  });
+  document.getElementById("b64-copy").addEventListener("click", function() {
+    if (!output.value) { showToast("没有可复制的内容"); return; }
+    navigator.clipboard.writeText(output.value).then(function() { showToast("已复制到剪贴板"); });
+  });
+})();
+
+// ===== UUID Generator =====
+(function() {
+  var display = document.getElementById("uuid-display");
+  var list = document.getElementById("uuid-list");
+  var lastUuid = "";
+  function generate(count) {
+    var uuids = [];
+    for (var i = 0; i < count; i++) {
+      uuids.push(crypto.randomUUID());
+    }
+    if (count === 1) {
+      lastUuid = uuids[0];
+      display.textContent = uuids[0];
+      list.style.display = "none";
+    } else {
+      lastUuid = uuids.join("\n");
+      list.innerHTML = uuids.map(function(u, i) { return (i+1) + ". " + u; }).join("<br>");
+      list.style.display = "block";
+      display.textContent = "已生成 " + count + " 个 UUID";
+    }
+  }
+  document.getElementById("uuid-gen-one").addEventListener("click", function() { generate(1); });
+  document.getElementById("uuid-gen-five").addEventListener("click", function() { generate(5); });
+  document.getElementById("uuid-copy").addEventListener("click", function() {
+    navigator.clipboard.writeText(lastUuid).then(function() { showToast("已复制到剪贴板"); });
+  });
+})();
+
+// ===== Hash Calculator =====
+(function() {
+  var input = document.getElementById("hash-input");
+  var output = document.getElementById("hash-output");
+  function hash(algo) {
+    var text = input.value;
+    if (!text) { showToast("请输入文本"); return; }
+    var encoder = new TextEncoder();
+    var data = encoder.encode(text);
+    crypto.subtle.digest(algo, data).then(function(hashBuffer) {
+      var hashArray = Array.from(new Uint8Array(hashBuffer));
+      output.value = hashArray.map(function(b) { return b.toString(16).padStart(2, "0"); }).join("");
+    }).catch(function(e) {
+      output.value = "计算失败: " + e.message;
+    });
+  }
+  document.getElementById("hash-sha256").addEventListener("click", function() { hash("SHA-256"); });
+  document.getElementById("hash-sha512").addEventListener("click", function() { hash("SHA-512"); });
+  document.getElementById("hash-sha1").addEventListener("click", function() { hash("SHA-1"); });
+  document.getElementById("hash-md5").addEventListener("click", function() {
+    output.value = "MD5 需要额外库支持，正在加载...";
+    // Use a simple CDN-based MD5
+    var s = document.createElement("script");
+    s.src = "https://cdn.jsdelivr.net/npm/blueimp-md5@2.19.0/js/md5.min.js";
+    s.onload = function() {
+      output.value = md5(input.value);
+    };
+    s.onerror = function() {
+      output.value = "MD5 库加载失败，请使用 SHA-256 代替";
+    };
+    document.head.appendChild(s);
+  });
+  document.getElementById("hash-copy").addEventListener("click", function() {
+    if (!output.value) { showToast("没有可复制的内容"); return; }
+    navigator.clipboard.writeText(output.value).then(function() { showToast("已复制到剪贴板"); });
+  });
+})();
+
 })();
