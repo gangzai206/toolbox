@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://gangzai.online/sitemap.xml
